@@ -1,5 +1,6 @@
 import pandas as pd
 from scipy.stats import ttest_ind, false_discovery_control
+import numpy as np
 
 
 def perform_dge(expr_df):
@@ -42,3 +43,32 @@ def prepare_survival_data(expr_df, clinical_df):
 	Returns data frame for plotting.
 	"""
 	print("Preparing data for survival analysis...")
+	tumor_samples = [s for s in expr_df.columns if s.split('-')[3].startswith('01')]
+	expr_tumor = expr_df[tumor_samples].T
+	expr_tumor.index = expr_tumor.index.str.slice(0,12)
+
+	aligned_df = expr_tumor.join(clinical_df, how='inner')
+
+	# Create survival points
+	aligned_df['deceased'] = (aligned_df['demographic.vital_status'] == 'Dead').astype(int)
+	aligned_df[['demographic.days_to_death', 'diagnoses.days_to_last_follow_up']] = (
+		aligned_df[['demographic.days_to_death', 'diagnoses.days_to_last_follow_up']]
+		.replace('\'--', np.nan)
+	)
+
+	aligned_df['demographic.days_to_death'] = pd.to_numeric(
+		aligned_df['demographic.days_to_death'], errors="coerce"
+	)
+	aligned_df['diagnoses.days_to_last_follow_up'] = pd.to_numeric(
+		aligned_df['diagnoses.days_to_last_follow_up'], errors="coerce"
+	)
+
+	aligned_df['time_to_event'] = aligned_df.apply(
+        	lambda row: row['demographic.days_to_death'] if row['deceased'] == 1 else row['diagnoses.days_to_last_follow_up'],
+        	axis=1
+	)
+	aligned_df = aligned_df.dropna(subset=['time_to_event'])
+
+	aligned_df['time_to_event'] = aligned_df['time_to_event'].astype(float)
+
+	return aligned_df
