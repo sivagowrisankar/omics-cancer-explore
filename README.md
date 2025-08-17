@@ -39,7 +39,7 @@ You can run this project using either Docker or a local Conda environment.
 * Docker (for Option 1)
 * Miniconda (for Option 2)
 
-### ### Option 1: Run with Docker (Recommended)
+### ### Option 1: Run with Docker
 
 This is the simplest way to run the entire analysis pipeline, as it handles all dependencies within a container.
 
