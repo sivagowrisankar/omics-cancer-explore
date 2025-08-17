@@ -35,3 +35,10 @@ def perform_dge(expr_df):
 	dge_results_df['fdr'] = false_discovery_control(dge_results_df['p_value'])	
 
 	return dge_results_df, matched_tumor, matched_normal
+
+def prepare_survival_data(expr_df, clinical_df):
+	"""
+	Align expression and clinical data for survival analysis.
+	Returns data frame for plotting.
+	"""
+	print("Preparing data for survival analysis...")

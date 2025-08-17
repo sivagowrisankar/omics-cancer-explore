@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-import analysis
+import analysis,visualization
 
 def main():
 	"""Main function to run the entire analysis pipeline."""
@@ -17,7 +17,7 @@ def main():
 	# Step 1: DGE and Heatmap
 	print("\n--- Running Step 1: DGE and Heatmap--")
 	dge_results, matched_tumor, matched_normal = analysis.perform_dge(expr_df)	
-	print(dge_results)
+	visualization.create_interactive_heatmap(expr_df, dge_results, matched_tumor, matched_normal, 100)
 
 if __name__ == '__main__':
 	main()

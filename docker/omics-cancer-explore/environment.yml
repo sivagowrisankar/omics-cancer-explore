@@ -8,6 +8,8 @@ dependencies:
   - numpy
   - pandas
   - scipy
+  - plotly
+  - dash-bio
   - matplotlib
   - seaborn
   - jupyter
