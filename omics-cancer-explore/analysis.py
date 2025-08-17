@@ -20,6 +20,9 @@ def perform_dge(expr_df):
 	matched_tumor = sorted(s for s in tumor_samples if s.split("-")[2] in patient_ids)
 	matched_normal = sorted(s for s in normal_samples if s.split("-")[2] in patient_ids)
 
+	if not matched_tumor or not matched_normal:
+		raise ValueError("Error: No matched tumor-normal pairs found in the dataset. Cannot perform differential expression")
+
 	expr_tumor = expr_df[matched_tumor]
 	expr_normal = expr_df[matched_normal]
 
@@ -43,6 +46,11 @@ def prepare_survival_data(expr_df, clinical_df):
 	Returns data frame for plotting.
 	"""
 	print("Preparing data for survival analysis...")
+	required_cols = ['demographic.vital_status','demographic.days_to_death','diagnoses.days_to_last_follow_up']
+	
+	if not all(col in clinical_df.columns for col in required_cols):
+		raise KeyError(f"Error: Clinical data is missing one of the required columns: {required_cols}")
+
 	tumor_samples = [s for s in expr_df.columns if s.split('-')[3].startswith('01')]
 	expr_tumor = expr_df[tumor_samples].T
 	expr_tumor.index = expr_tumor.index.str.slice(0,12)

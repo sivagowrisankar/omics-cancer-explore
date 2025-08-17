@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from lifelines import KaplanMeierFitter
 from lifelines.statistics import logrank_test
 
-def create_interactive_heatmap(expr_df, dge_results_df, tumor_samples, normal_samples, top_n=50):
+def create_interactive_heatmap(expr_df, dge_results_df, tumor_samples, normal_samples, outputdir, top_n=50):
 	"""Generates and saves an interactive heatmap of top diff expr genes."""
 	print(f"Generating heat map for {top_n} genes...")
 	top_genes = dge_results_df.sort_values('fdr').head(top_n)	
@@ -23,13 +23,18 @@ def create_interactive_heatmap(expr_df, dge_results_df, tumor_samples, normal_sa
 		title=f'Top {top_n} Differentially expressed genes (Tumor vs. Matched Normal)',
 	)
 
-	fig.write_html('../output/diffexp_heatmap.html')
-	print("Interactive heatmap saved to 'output/diffexp_heatmap.html'")
+	outfilename = f"{outputdir}/diffexp_heatmap.html"
 
+	fig.write_html(outfilename)
+	print(f"Interactive heatmap saved to '{outfilename}'")
 
-def create_KM_plot(survival_df, gene_symbol='ETV4'):
+def create_KM_plot(survival_df, outputdir, gene_symbol='ETV4'):
 	"""Generates and saves a KM survival plot."""
 	print(f"Plotting survival curve for gene: {gene_symbol}...")
+
+	if gene_symbol not in survival_df.columns:
+		raise KeyError(f"Error: Gene '{gene_symbol}' not found in the expression data")
+
 	# Stratify patients by median gene expression
 	median_expr = survival_df[gene_symbol].median()
 	survival_df['expression_group'] = (survival_df[gene_symbol] > median_expr).map({True: 'High', False: 'Low'})
@@ -56,6 +61,7 @@ def create_KM_plot(survival_df, gene_symbol='ETV4'):
 	ax.set_xlabel('Days')
 	ax.set_ylabel('Overall Survival Probability')
 	plt.tight_layout()
-	plt.savefig('../output/survival_curve.png')
+	outfilename = f"{outputdir}/{gene_symbol}_surv_curve.png"
+	plt.savefig(outfilename)
 
-	print("Survival curve saved to 'output/survival_curve.png'")
+	print(f"Survival curve saved to '{outfilename}'")
