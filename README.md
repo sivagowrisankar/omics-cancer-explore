@@ -60,7 +60,8 @@ This is the simplest way to run the entire analysis pipeline, as it handles all 
     Execute the run script. This will start the container, run the `run.py` script, and save all outputs to your local `output/` directory.
     ```bash
     chmod +x bin/run_docker.sh
-    ./bin/run_docker.sh
+    ./bin/run_docker.sh --outputdir <Output Directory> --survgene <GENE>
+    Example: ./bin/run_docker.sh --outputdir output --survgene ETV4
     ```
 
 ### ### Option 2: Run with a Local Conda Environment
@@ -86,6 +87,7 @@ This is the simplest way to run the entire analysis pipeline, as it handles all 
 4.  **Run the Analysis Pipeline:**
     ```bash
     python omics_cancer_explore/omics_cancer_explore.py --outputdir <Output Directory> --survgene <GENE>
+    Example: python omics_cancer_explore/omics_cancer_explore.py --outputdir output --survgene ETV4
     ```
 
 ***

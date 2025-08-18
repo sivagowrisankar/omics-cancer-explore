@@ -2,10 +2,14 @@ import dash_bio as dashbio
 import matplotlib.pyplot as plt
 from lifelines import KaplanMeierFitter
 from lifelines.statistics import logrank_test
+import logging
+
+#Get a logger instance
+logger = logging.getLogger(__name__)
 
 def create_interactive_heatmap(expr_df, dge_results_df, tumor_samples, normal_samples, outputdir, top_n=50):
 	"""Generates and saves an interactive heatmap of top diff expr genes."""
-	print(f"Generating heat map for {top_n} genes...")
+	logger.info(f"Generating heat map for {top_n} genes...")
 	top_genes = dge_results_df.sort_values('fdr').head(top_n)	
 	heatmap_data = expr_df.loc[top_genes.index, tumor_samples+normal_samples].copy()
 	heatmap_data = heatmap_data.sub(heatmap_data.mean(axis=1), axis=0).div(heatmap_data.std(axis=1), axis=0)
@@ -26,11 +30,11 @@ def create_interactive_heatmap(expr_df, dge_results_df, tumor_samples, normal_sa
 	outfilename = f"{outputdir}/diffexp_heatmap.html"
 
 	fig.write_html(outfilename)
-	print(f"Interactive heatmap saved to '{outfilename}'")
+	logger.info(f"Interactive heatmap saved to '{outfilename}'")
 
 def create_KM_plot(survival_df, outputdir, gene_symbol='ETV4'):
 	"""Generates and saves a KM survival plot."""
-	print(f"Plotting survival curve for gene: {gene_symbol}...")
+	logger.info(f"Plotting survival curve for gene: {gene_symbol}...")
 
 	if gene_symbol not in survival_df.columns:
 		raise KeyError(f"Error: Gene '{gene_symbol}' not found in the expression data")
@@ -64,4 +68,4 @@ def create_KM_plot(survival_df, outputdir, gene_symbol='ETV4'):
 	outfilename = f"{outputdir}/{gene_symbol}_surv_curve.png"
 	plt.savefig(outfilename)
 
-	print(f"Survival curve saved to '{outfilename}'")
+	logger.info(f"Survival curve saved to '{outfilename}'")

@@ -1,7 +1,10 @@
 import pandas as pd
 from scipy.stats import ttest_ind, false_discovery_control
 import numpy as np
+import logging
 
+# Get the logger instance
+logger = logging.getLogger(__name__)
 
 def perform_dge(expr_df):
 	"""
@@ -9,7 +12,7 @@ def perform_dge(expr_df):
 	Returns a DataFrame with DGE results.
 	"""
 	
-	print("Running DGE analysis")
+	logger.info("Running DGE analysis")
 	# Separate primary tumor (marked by 01 string) and matched normal (marked by 11 string) samples
 	# Ignoring Recurrent and Metastatic Tumors for this exercise
 	tumor_samples = [s for s in expr_df.columns if s.split("-")[3].startswith('01')]
@@ -45,7 +48,7 @@ def prepare_survival_data(expr_df, clinical_df):
 	Align expression and clinical data for survival analysis.
 	Returns data frame for plotting.
 	"""
-	print("Preparing data for survival analysis...")
+	logger.info("Preparing data for survival analysis...")
 	required_cols = ['demographic.vital_status','demographic.days_to_death','diagnoses.days_to_last_follow_up']
 	
 	if not all(col in clinical_df.columns for col in required_cols):
