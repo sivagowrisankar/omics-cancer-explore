@@ -1,4 +1,8 @@
 # omics-cancer-explore
+[![CI/CD Pipeline Status](https://github.com/sivagowrisankar/omics-cancer-explore/actions/workflows/ci-cd-pipeline.yml/badge.svg)](https://github.com/sivagowrisankar/omics-cancer-explore/actions)
+[![Python Version](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/downloads/)
+[![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)](https://docs.pytest.org/en/stable/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Explore TCGA data with this project
 
